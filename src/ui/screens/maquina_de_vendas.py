@@ -1,5 +1,6 @@
 from src.shared.helpers.DevSystem import DevSystem
 from src.shared.helpers.ScreenProperties import *
+from tkinter import PhotoImage, Label, Button
 
 # Importação de imagens
 vending_machine_image = PhotoImage(file=r"src/ui/assets/images/home/vending_machine.png")
@@ -23,27 +24,15 @@ class MaquinaDeVendas:
             self.home.atualizar_status("Moeda inválida.")
 
     def atualizar_estado(self):
-        if self.saldo == 0:
-            self.estado_atual = 's0'
-        elif self.saldo == 0.25:
-            self.estado_atual = 's1'
-        elif self.saldo == 0.50:
-            self.estado_atual = 's2'
-        elif self.saldo == 0.75:
-            self.estado_atual = 's3'
-        elif self.saldo == 1.00:
-            self.estado_atual = 's4'
-        elif self.saldo == 1.25:
-            self.estado_atual = 's5'
-        elif self.saldo == 1.50:
-            self.estado_atual = 's6'
-        elif self.saldo == 1.75:
-            self.estado_atual = 's7'
-        elif self.saldo >= 2.00:
-            self.estado_atual = 's8'
+        # Atualiza o estado com base no saldo
+        if self.saldo < 2.00:
+            self.estado_atual = f's{int(self.saldo * 100 // 25)}'
+        else:
+            self.estado_atual = 's8'  # Estado suficiente para comprar o refrigerante
             self.home.atualizar_status("Saldo suficiente! Aperte o botão para retirar o refrigerante.")
 
     def verificar_saldo(self):
+        # Verifica se o saldo é suficiente para o refrigerante
         if self.estado_atual == 's8':
             self.home.atualizar_status("Aperte o botão para dispensar o refrigerante.")
         else:
@@ -51,6 +40,7 @@ class MaquinaDeVendas:
             self.home.atualizar_status(f"Insira mais R$ {restante:.2f}.")
 
     def dispensar_produto(self):
+        # Dispensar o refrigerante e o troco, se houver
         if self.estado_atual == 's8':
             troco = self.saldo - 2.00
             self.home.atualizar_status("Dispensando refrigerante...")
@@ -61,6 +51,7 @@ class MaquinaDeVendas:
             self.home.atualizar_status("Saldo insuficiente para dispensar o refrigerante.")
 
     def resetar_maquina(self):
+        # Reseta a máquina para uma nova operação
         self.saldo = 0.0
         self.estado_atual = 's0'
         self.home.atualizar_saldo(f"Saldo atual: R$ {self.saldo:.2f}")
@@ -96,8 +87,7 @@ class Home(ScreenProperties):
 
     def _build_screen(self):
         """Função para construir a tela "Home" """
-        Label(self.frame, image=vending_machine_image, width=256, background="#ccccff", height=256).place(x=x / 2 - 125,
-                                                                                                          y=y / 2 - 356)
+        Label(self.frame, image=vending_machine_image, width=256, background="#ccccff", height=256).place(x=x / 2 - 125, y=y / 2 - 356)
 
         # Botões para inserir moedas
         Button(self.frame, font=("Arial", 14), text="Inserir R$ 0.25", cursor="hand2",
@@ -109,7 +99,7 @@ class Home(ScreenProperties):
 
         # Botão para dispensar refrigerante
         Button(self.frame, font=("Arial", 14), text="Retirar refrigerante", cursor="hand2",
-               command=lambda: self.maquina.dispensar_produto).place(x=1100, y=500)
+               command=self.maquina.dispensar_produto).place(x=1100, y=500)
 
         # Rótulo de status
         self.status_label = Label(self.frame, font=("Arial", 14), text="Insira moedas.", background="#ccccff")
