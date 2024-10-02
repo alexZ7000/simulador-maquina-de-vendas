@@ -14,7 +14,7 @@ frame = Frame(root)
 pygame.mixer.init()
 
 class ScreenProperties:
-    """Classe que irá definir todos os itens que todos os "Menu" vão usar"""
+    """Classe que irá definir todos os atributos que as telas vão usar"""
 
     def __init__(self):
         """Criação da minha tela"""
@@ -24,8 +24,8 @@ class ScreenProperties:
         self._build_screen()
 
     def set_dev_system(self, dev_system):
-        """ Função para colocar os objetos referenciados no "DevSystem" em todas as Classes que herdarem de "Menu".
-            :param dev_system: Pegar referencias
+        """Função para colocar os objetos referenciados no "DevSystem" em todas as Classes que herdarem de "ScreenProperties".
+            :param dev_system: Pegar referências
             :returns: Não retorna nada
         """
         self.dev_system = dev_system

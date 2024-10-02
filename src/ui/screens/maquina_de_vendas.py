@@ -26,12 +26,15 @@ transicoes = {
 }
 
 class MaquinaDeVendas:
-    """Lógica da máquina de vendas"""
+    """Classe responsável pela lógica da máquina de vendas (backend)"""
+
     def __init__(self, home):
+        """Construtor"""
         self.home = home
         self.estado_atual = 0
 
     def inserir_moeda(self, valor):
+        """Função para inserir moedas e mudar o estado"""
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
         moedas = {'m25': 0.25, 'm50': 0.50, 'm100': 1.00}
         for entrada, val in moedas.items():
@@ -43,6 +46,7 @@ class MaquinaDeVendas:
         self.home.atualizar_status("Moeda inválida.")
 
     def tratar_saida(self, output):
+        """Função que verifica e retorna troco (se tiver) na hora de dispensar refrigerante"""
         if output.startswith('t'):
             troco = output[1:]  # Ex.: 't25' -> troco de R$0,25
             messagebox.showinfo("Troco", f"Você recebeu {troco} de troco!")
@@ -50,6 +54,7 @@ class MaquinaDeVendas:
             messagebox.showinfo("Refrigerante", "Pressione o botão para retirar o refrigerante!")
 
     def dispensar_produto(self):
+        """Função para dispensar refrigerante quando tiver valor suficiente (estado = 8)"""
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
         if self.estado_atual == 8:
             messagebox.showinfo("Refrigerante", "Refrigerante retirado!")
@@ -60,7 +65,10 @@ class MaquinaDeVendas:
             self.home.atualizar_status("Saldo insuficiente para dispensar o refrigerante.")
 
 class Home(ScreenProperties):
+    """Classe responsável pelo frontend da aplicação, construindo a tela "Home" """
+
     def __init__(self):
+        """Construtor"""
         super().__init__()
         self.maquina = MaquinaDeVendas(self)
 
@@ -72,11 +80,7 @@ class Home(ScreenProperties):
         """Atualiza o saldo na tela"""
         self.saldo_label.config(text=texto)
 
-    def sumir_texto(self):
-        pass
-
     def confirm(self):
-        self.sumir_texto()
         """Função para exibir uma caixinha de confirmação ao usuário,
         para ele decidir se realmente quer sair"""
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
@@ -119,10 +123,11 @@ class Home(ScreenProperties):
         # Botão de saída
         Button(self.frame, font=("Arial", 14), text="Sair do App", cursor="hand2", command=self.confirm).place(x=1300, y=800)
 
-# Criação do menu principal
+# Definição das referências de tela
 menu_home = Home()
 menu_home.show()
 dev_system = DevSystem(menu_home)
 menu_home.set_dev_system(DevSystem)
 
+# Manter a tela em execução
 root.mainloop()
