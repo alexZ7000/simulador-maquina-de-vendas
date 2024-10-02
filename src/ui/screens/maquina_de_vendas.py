@@ -32,6 +32,7 @@ class MaquinaDeVendas:
         self.estado_atual = 0
 
     def inserir_moeda(self, valor):
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
         moedas = {'m25': 0.25, 'm50': 0.50, 'm100': 1.00}
         for entrada, val in moedas.items():
             if valor == val:
@@ -49,6 +50,7 @@ class MaquinaDeVendas:
             messagebox.showinfo("Refrigerante", "Pressione o botão para retirar o refrigerante!")
 
     def dispensar_produto(self):
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
         if self.estado_atual == 8:
             messagebox.showinfo("Refrigerante", "Refrigerante retirado!")
             self.estado_atual = 0
