@@ -1,6 +1,17 @@
-# simulador-maquina-de-vendas
+# Simulador Máquina de Vendas <picture><source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3b0/512.webp" type="image/webp"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3b0/512.gif" alt="🎰" width="32" height="32"></picture>
 Desenvolvimento de um projeto para a disciplina de Autômatos
 
+# Como rodar o projeto? <picture><source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.webp" type="image/webp"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.gif" alt="🚀" width="32" height="32"></picture>
+
+1. Instale as dependências do projeto
+    ```
+    pip install -r requirements.txt
+    ```
+
+2. Execute o arquivo main.py
+    ```
+    python main.py
+    ```
 
 ## 🤝 Colaboradores
 
