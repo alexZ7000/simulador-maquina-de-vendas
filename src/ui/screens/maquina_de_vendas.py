@@ -32,37 +32,38 @@ class MaquinaDeVendas:
         """Construtor"""
         self.home = home
         self.estado_atual = 0
+    def tratarSaida(self, output):
+        """Função que verifica e retorna troco (se tiver) na hora de dispensar refrigerante"""
+        if output.startswith('t'):
+            troco = int(output[1:]) / 100  
+            messagebox.showinfo("Troco", f"Você recebeu R${troco:.2f} de troco!")
+        elif self.estado_atual == 8:
+            messagebox.showinfo("Refrigerante", "Pressione o botão para retirar o refrigerante!")
 
-    def inserir_moeda(self, valor):
+    def inserirMoeda(self, valor):
         """Função para inserir moedas e mudar o estado"""
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
         moedas = {'m25': 0.25, 'm50': 0.50, 'm100': 1.00}
         for entrada, val in moedas.items():
             if valor == val:
                 self.estado_atual, output = transicoes.get((self.estado_atual, entrada), (self.estado_atual, 'n'))
-                self.home.atualizar_saldo(f"Saldo atual: {estados[self.estado_atual]}")
-                self.tratar_saida(output)
+                self.home.atualizarSaldo(f"Saldo atual: {estados[self.estado_atual]}")
+                self.tratarSaida(output)
                 return
-        self.home.atualizar_status("Moeda inválida.")
+        self.home.atualizarStatus("Moeda inválida.")
 
-    def tratar_saida(self, output):
-        """Função que verifica e retorna troco (se tiver) na hora de dispensar refrigerante"""
-        if output.startswith('t'):
-            troco = output[1:]  # Ex.: 't25' -> troco de R$0,25
-            messagebox.showinfo("Troco", f"Você recebeu {troco} de troco!")
-        elif self.estado_atual == 8:
-            messagebox.showinfo("Refrigerante", "Pressione o botão para retirar o refrigerante!")
+    
 
-    def dispensar_produto(self):
+    def dispensarProduto(self):
         """Função para dispensar refrigerante quando tiver valor suficiente (estado = 8)"""
         pygame.mixer.Channel(1).play(pygame.mixer.Sound('src/ui/assets/sound/click.wav'))
         if self.estado_atual == 8:
             messagebox.showinfo("Refrigerante", "Refrigerante retirado!")
             self.estado_atual = 0
-            self.home.atualizar_saldo(f"Saldo atual: {estados[self.estado_atual]}")
-            self.home.atualizar_status("Máquina pronta para nova operação.")
+            self.home.atualizarSaldo(f"Saldo atual: {estados[self.estado_atual]}")
+            self.home.atualizarStatus("Máquina pronta para nova operação.")
         else:
-            self.home.atualizar_status("Saldo insuficiente para dispensar o refrigerante.")
+            self.home.atualizarStatus("Saldo insuficiente.")
 
 class Home(ScreenProperties):
     """Classe responsável pelo frontend da aplicação, construindo a tela "Home" """
@@ -72,11 +73,11 @@ class Home(ScreenProperties):
         super().__init__()
         self.maquina = MaquinaDeVendas(self)
 
-    def atualizar_status(self, texto):
+    def atualizarStatus(self, texto):
         """Atualiza a mensagem de status na tela"""
         self.status_label.config(text=texto)
 
-    def atualizar_saldo(self, texto):
+    def atualizarSaldo(self, texto):
         """Atualiza o saldo na tela"""
         self.saldo_label.config(text=texto)
 
@@ -98,15 +99,15 @@ class Home(ScreenProperties):
 
         # Botões para inserir moedas
         Button(self.frame, font=("Arial", 14), text="Inserir R$ 0.25", cursor="hand2",
-               command=lambda: self.maquina.inserir_moeda(0.25)).place(x=500, y=500)
+               command=lambda: self.maquina.inserirMoeda(0.25)).place(x=500, y=500)
         Button(self.frame, font=("Arial", 14), text="Inserir R$ 0.50", cursor="hand2",
-               command=lambda: self.maquina.inserir_moeda(0.50)).place(x=700, y=500)
+               command=lambda: self.maquina.inserirMoeda(0.50)).place(x=700, y=500)
         Button(self.frame, font=("Arial", 14), text="Inserir R$ 1.00", cursor="hand2",
-               command=lambda: self.maquina.inserir_moeda(1.00)).place(x=900, y=500)
+               command=lambda: self.maquina.inserirMoeda(1.00)).place(x=900, y=500)
 
         # Botão para dispensar refrigerante
         Button(self.frame, font=("Arial", 14), text="Retirar refrigerante", cursor="hand2",
-               command=lambda: self.maquina.dispensar_produto()).place(x=1100, y=500)
+               command=lambda: self.maquina.dispensarProduto()).place(x=1100, y=500)
 
         # Rótulo de status
         self.status_label = Label(self.frame, font=("Arial", 14), text="Insira moedas.", background="#ccccff")
